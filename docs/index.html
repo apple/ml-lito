@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="Brief description goes here">
+
+        <title>LiTo: Surface Light Field Tokenization</title>
+
+        <link rel="icon" href="./assets/favicon.png" type="image/png">
+        <!-- Bootstrap CSS (local) -->
+        <link href="./assets/bootstrap-5.3.0.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="./assets/style.css">
+    </head>
+
+    <body>
+
+        <header>
+            <div class="container fade-in header-custom">
+                <h1>LiTo: Surface Light Field Tokenization</h1>
+                <nav class="header-nav-custom">
+                    <ul class="links">
+                        <li>
+                            <img src="./assets/apple-icon.svg" />
+                            <a href="https://machinelearning.apple.com/research/lito" target="_blank">Paper</a>
+                        </li>
+                        <li>
+                            <img src="./assets/arxiv-icon.svg" />
+                            <a href="https://arxiv.org/abs/2603.11047" target="_blank">arXiv</a>
+                        </li>
+                        <!-- <li class="link-disabled">
+                            <img src="./assets/github-icon.svg" />
+                            <a href="https://github.com/" target="_blank">Code</a>
+                        </li> -->
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <section class="sub-header fade-in">
+            <div class="container">
+                <div>
+                    <h3><a href="https://iclr.cc/Conferences/2026" target="_blank">ICLR 2026</a></h3>
+                </div>
+                <br>
+                <nav>
+                    <ul class="links">
+                        <li><a href="https://scholar.google.com/citations?user=F5Z9kN4AAAAJ&hl=en" target="_blank">Jen-Hao Rick Chang*</a></li>
+                        <li><a href="https://xiaoming-zhao.com/" target="_blank">Xiaoming Zhao*</a></li>
+                        <li><a href="https://dorianchan.com/" target="_blank">Dorian Chan</a></li>
+                        <li><a href="https://scholar.google.com/citations?user=Fe7NTe0AAAAJ&hl=en" target="_blank">Oncel Tuzel</a></li>
+                    </ul>
+                    <p>(* denotes equal contribution)</p>
+                </nav>
+                <div>
+                    <p>Apple</p>
+                </div>
+            </div>
+        </section>
+
+        <main>
+
+            <!-- <section class="main-section">
+                <div class="container-custom fade-in">
+                    <div class="text-center">
+                        <div class="video-container" style="max-width: 100%; margin: 0 auto; aspect-ratio: auto; background: transparent;">
+                            <video controls loop playsinline muted autoplay style="width: 100%; height: auto;">
+                                <source src="./videos/teaser.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+
+                        <br>
+                        <h5>
+                            LiTo is a 3D latent representation that jointly captures object geometry and view-dependent appearance.
+                            Built upon this unified representation, a latent flow matching model enables high-quality image-to-3D generation.
+                        </h5>
+                        
+                    </div>
+                </div>
+            </section> -->
+
+            <section class="main-section">
+                <div class="container-custom fade-in py-5 border-top">
+                    <h2><a href="#recon-comparison" id="recon-comparison">Reconstruction Comparison</a></h2>
+
+                    <!-- Snapshot Row -->
+                    <div class="snapshot-container d-flex align-items-center gap-2 my-4">
+                        <button class="snapshot-nav-btn prev flex-shrink-0" id="snapshot-prev">&lt;</button>
+                        <div class="snapshot-scroll-wrapper flex-grow-1 overflow-hidden">
+                            <div class="snapshot-row" id="snapshot-row"></div>
+                        </div>
+                        <button class="snapshot-nav-btn next flex-shrink-0" id="snapshot-next">&gt;</button>
+                    </div>
+
+                    <!-- UID Display (can be commented out if not needed) -->
+                    <!-- <div class="comparison-uid" id="comparison-uid"></div> -->
+
+                    <!-- Three Videos Side-by-Side -->
+                    <div class="row g-3 my-4">
+                        <div class="col-12 col-md-4">
+                            <div class="video-caption">Ground Truth</div>
+                            <div class="video-container">
+                                <video id="gt-video" loop playsinline muted></video>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="video-caption">Ours</div>
+                            <div class="video-container">
+                                <video id="ours-video" loop playsinline muted></video>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="video-caption">TRELLIS</div>
+                            <div class="video-container">
+                                <video id="trellis-video" loop playsinline muted></video>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Video Control Buttons -->
+                    <div class="video-controls d-flex align-items-center gap-3 my-4">
+                        <button id="play-pause-btn" class="play-pause-btn" aria-label="Play">
+                            <svg class="play-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 5v14l11-7z" fill="#6c757d"/>
+                            </svg>
+                        </button>
+                        <input type="range" id="video-progress" class="video-progress-bar" min="0" max="100" value="0" step="0.1">
+                    </div>
+                    <p id="recon-asset-link" class="asset-link"></p>
+                </div>
+            </section>
+
+            <section class="main-section">
+                <div class="container-custom fade-in py-5 border-top">
+                    <h2><a href="#generation-comparison" id="generation-comparison">Image-to-3D Generation Comparison</a></h2>
+
+                    <p>
+                        Note that <a href="https://arxiv.org/abs/2412.01506" target="_blank">TRELLIS (Xiang et al., 2025)</a> does not respect the camera coordinate system, so sometimes their output objects will be oriented incorrectly.
+                    </p>
+
+                    <!-- Snapshot Row -->
+                    <div class="snapshot-container d-flex align-items-center gap-2 my-4">
+                        <button class="snapshot-nav-btn prev flex-shrink-0" id="gen-snapshot-prev">&lt;</button>
+                        <div class="snapshot-scroll-wrapper flex-grow-1 overflow-hidden">
+                            <div class="snapshot-row" id="gen-snapshot-row"></div>
+                        </div>
+                        <button class="snapshot-nav-btn next flex-shrink-0" id="gen-snapshot-next">&gt;</button>
+                    </div>
+
+                    <!-- UID Display (can be commented out if not needed) -->
+                    <!-- <div class="comparison-uid" id="gen-comparison-uid"></div> -->
+
+                    <!-- Three Items Side-by-Side: Conditioning Image + Two Videos -->
+                    <div class="row g-3 my-4">
+                        <div class="col-12 col-md-4">
+                            <div class="video-caption">Conditioning Image</div>
+                            <div class="gen-image-container">
+                                <img id="gen-cond-image" src="" alt="Conditioning Image">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="video-caption">Ours</div>
+                            <div class="video-container">
+                                <video id="gen-ours-video" loop playsinline muted></video>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="video-caption">TRELLIS</div>
+                            <div class="video-container">
+                                <video id="gen-trellis-video" loop playsinline muted></video>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Video Control Buttons -->
+                    <div class="video-controls d-flex align-items-center gap-3 my-4">
+                        <button id="gen-play-pause-btn" class="play-pause-btn" aria-label="Play">
+                            <svg class="play-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 5v14l11-7z" fill="#6c757d"/>
+                            </svg>
+                        </button>
+                        <input type="range" id="gen-video-progress" class="video-progress-bar" min="0" max="100" value="0" step="0.1">
+                    </div>
+                    <p id="gen-asset-link" class="asset-link"></p>
+                </div>
+            </section>
+
+            <section class="main-section">
+                <div class="container-custom fade-in py-5 border-top">
+                    <h2><a href="#gaussian-comparison" id="gaussian-comparison">Interactive 3DGS Comparison</a></h2>
+
+                    <p>
+                        Please click each image to open the side-by-side 3DGS viewer for comparison between LiTo and <a href="https://arxiv.org/abs/2412.01506" target="_blank">TRELLIS (Xiang et al., 2025)</a>.
+                    </p>
+
+                    <!-- 3DGS Gallery Grid -->
+                    <div class="snapshot-container d-flex align-items-center gap-2 my-4">
+                        <button class="snapshot-nav-btn prev flex-shrink-0" id="gaussian-prev">&lt;</button>
+                        <div class="snapshot-scroll-wrapper flex-grow-1 overflow-hidden">
+                            <div class="gaussian-gallery" id="gaussian-gallery">
+                                <!-- Reconstruction: Apple -->
+                                <div class="gaussian-item"
+                                     data-name="Apple (reconstruction)"
+                                     data-left-url="gaussians/recon_apple/ours.spz"
+                                     data-right-url="gaussians/recon_apple/trellis.spz"
+                                     data-left-label="Ours"
+                                     data-right-label="TRELLIS"
+                                     data-left-scale="1"
+                                     data-right-scale="2">
+                                    <img src="gaussians/recon_apple/snapshot.png" alt="Apple reconstruction comparison">
+                                    <div class="gaussian-caption">Apple (reconstruction)</div>
+                                    <p>The 3D asset is created by DigitalSouls and distributed under CC Attribution-NonCommercial license. We accessed it from <a href="https://sketchfab.com/3d-models/delicious-red-apple-dc5a0c0c439942d58d038a10d7064c91" target="_blank">here</a> in March 2026.</p>
+                                </div>
+
+                                <!-- Generation: Steampunk -->
+                                <div class="gaussian-item"
+                                     data-name="Steampunk (generation)"
+                                     data-left-url="gaussians/gen_steampunk/ours.spz"
+                                     data-right-url="gaussians/gen_steampunk/trellis.spz"
+                                     data-left-label="Ours"
+                                     data-right-label="TRELLIS"
+                                     data-left-scale="1"
+                                     data-right-scale="2">
+                                    <img src="gaussians/gen_steampunk/snapshot.png" alt="Steampunk generation comparison">
+                                    <div class="gaussian-caption">Steampunk(generation)</div>
+                                    <p>The 3D asset is created by 3d-coat and distributed under CC Attribution license. We accessed it from <a href="https://sketchfab.com/3d-models/robot-steampunk-3d-coat-45-pbr-91eb0eb061024bf1bc5e3eb5ffe385d8" target="_blank">here</a> in March 2026.</p>
+                                </div>
+
+                                <!-- Generation: Beetle -->
+                                <div class="gaussian-item"
+                                     data-name="Beetle (generation)"
+                                     data-left-url="gaussians/gen_beetle/ours.spz"
+                                     data-right-url="gaussians/gen_beetle/trellis.spz"
+                                     data-left-label="Ours"
+                                     data-right-label="TRELLIS"
+                                     data-left-scale="1"
+                                     data-right-scale="2">
+                                    <img src="gaussians/gen_beetle/snapshot.png" alt="Beetle generation comparison">
+                                    <div class="gaussian-caption">Beetle (generation)</div>
+                                    <p>The given input image is AI-generated.</p>
+                                </div>                                
+
+                                <!-- Generation: Bone -->
+                                <div class="gaussian-item"
+                                     data-name="Bone (generation)"
+                                     data-left-url="gaussians/gen_bone/ours.spz"
+                                     data-right-url="gaussians/gen_bone/trellis.spz"
+                                     data-left-label="Ours"
+                                     data-right-label="TRELLIS"
+                                     data-left-scale="1"
+                                     data-right-scale="2">
+                                    <img src="gaussians/gen_bone/snapshot.png" alt="Bone generation comparison">
+                                    <div class="gaussian-caption">Bone (generation)</div>
+                                    <p>The given input image is captured in the wild.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="snapshot-nav-btn next flex-shrink-0" id="gaussian-next">&gt;</button>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- <section class="main-section">
+                <div class="container-custom fade-in py-5 py-md-5 border-top">
+                    <h2><a href="#method" id="method">Method Overview</a></h2>
+
+                    <p>
+                        Most prior works focus on either reconstructing 3D geometry or predicting view-independent diffuse appearance, and thus struggle to capture realistic view-dependent effects.
+                        Our approach leverages the fact that RGB-depth images provide samples of a surface light field.
+                        By encoding random subsamples of this surface light field into a compact set of latent vectors, our model learns to represent both geometry and appearance within a unified 3D latent space.
+                        This representation can reproduce view-dependent effects such as lighting reflections and Fresnel reflections under complex lighting.
+                    </p>
+
+                    <p>
+                        We further train a latent flow matching model on this representation to learn its distribution conditioned on a single input image,
+                        enabling the generation of 3D objects with appearances <b>with the lighting and materials in the input</b>.
+                    </p>
+
+                    <div class="text-center my-4">
+                        <div style="max-width: 800px; margin: 0 auto;">
+                            <img src="./assets/overview.png" class="img-fluid" alt="LiTo overview"/>
+                        </div>
+                        <p class="mt-2">
+                            LiTo's tokenization and detokenization process.
+                        </p>
+                    </div>
+
+                </div>
+            </section> -->
+
+            <section class="main-section">
+                <div class="container-custom fade-in py-5 border-top">
+                <h2><a href="#bibtex" id="bibtex">BibTeX</a></h2>
+                <br>
+                <pre><code>
+                    @inproceedings{chang2026lito,<br>
+                        &nbsp;&nbsp;author    = {Jen-Hao Rick Chang$^\ast$ and Xiaoming Zhao$^\ast$ and Dorian Chan and Oncel Tuzel},<br>
+                        &nbsp;&nbsp;title     = {{LiTo: Surface Light Field Tokenization}},<br>
+                        &nbsp;&nbsp;booktitle = {International Conference on Learning Representations},<br>
+                        &nbsp;&nbsp;year      = {2026},<br>
+                    }
+                </code></pre>
+                </div>
+            </section>
+        </main>
+
+        <script>
+            // Empty - all video functionality moved to comparison.js
+        </script>
+
+        <!-- Slider Comparison Scripts -->
+        <script src="./assets/comparison.js" defer></script>
+
+        <!-- Bootstrap JS (local) -->
+        <script src="./assets/bootstrap-5.3.0.bundle.min.js"></script>
+
+        <footer>
+            <div class="container">
+                <copy>
+                    <p>
+                        All 3D assets used for reconstruction or generation on this website were licensed under <a href="https://creativecommons.org/">Creative Commons licenses</a> as of the time of publication (March 2026).
+                        <br>
+                        All generated samples are licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a>.
+                    </p>
+                    
+                    <p> Copyright © <span class="footer-year"></span> Apple Inc. All rights reserved. </p>
+                </copy>
+            </div>
+        </footer>
+
+        <script src="./assets/script.js" defer></script>
+
+    </body>
+</html>

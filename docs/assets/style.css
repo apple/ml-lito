@@ -1,0 +1,1420 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    overflow-x: hidden;
+}
+
+.playlist {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 10px 40px 0px 0px;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 100vw;
+    height: 100%;
+    font-size: 16px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+    color: #222;
+    background-color: #fff;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+    overflow: auto;
+    color: #444444;
+    display: flex;
+    flex-direction: column;
+    scroll-padding-top: 10%;
+}
+
+body.dragging-slider {
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+}
+
+body h1 {
+    font-size: 2.5rem;
+    line-height: 1.2;
+    font-weight: bold;
+    color: #000000;
+    margin: 0;
+    text-align: left;
+}
+
+body h2 {
+    font-size: 2rem;
+    line-height: 1.3;
+    font-weight: bold;
+    color: #000000;
+}
+
+body a {
+    color: #000000;
+    text-decoration: none;
+}
+
+body a:hover {
+    text-decoration: underline;
+}
+
+body p {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0 0 1rem 0;
+}
+
+body h1 {
+    margin: 0;
+}
+
+body ul {
+    list-style: none;
+    padding: 0;
+}
+
+body .container {
+    display: flex;
+    max-width: 980px;
+    margin: 20px 0 20px;
+    padding: 0;
+    align-items: center;
+}
+
+body main .container {
+    padding: 0 30px;
+    align-items: flex-start;
+}
+
+.container-custom {
+    align-items: flex-start;
+}
+
+.container-custom.border-top {
+    border-top: 1px solid #000000 !important;
+}
+
+/* .js-enabled .fade-in {
+    opacity: 0;
+    transform: translateY(100px);
+    transition: opacity 1s ease-out, transform 1s ease-out;
+} */
+
+body main {
+    transition: padding-top 0.3s ease-in-out;
+}
+
+body main .container audio {
+    width: 40px;
+}
+
+body main .container img {
+    width: 100%;
+}
+
+body main .container .table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+body main .container .table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+    text-align: left;
+    min-width: 400px;
+}
+
+body main .container .table-container th, td {
+    padding: 12px;
+    border: 1px solid #ddd;
+}
+
+body main .container .table-container th {
+    background-color: #f4f4f4;
+}
+
+body main .container .table-container tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+body main .container .table-container tr:hover {
+    background-color: #f1f1f1;
+}
+
+body header {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px 30px;
+    background: white;
+    z-index: 9999;
+    box-sizing: border-box;
+}
+
+body header.sticky {
+    position: sticky;
+}
+
+body header.sticky .container{
+    margin: 16px auto 0;
+}
+
+body header .container {
+    max-width: 980px;
+    margin: 140px auto 60px;
+    padding: 0;
+    justify-content: space-between;
+    align-items: center !important;
+}
+
+/* Custom header alignment to override Bootstrap */
+.header-custom {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    text-align: left !important;
+}
+
+.header-custom h1 {
+    text-align: left !important;
+    margin: 0;
+}
+
+.header-nav-custom {
+    display: flex !important;
+    align-items: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    align-self: center !important;
+}
+
+body header .container nav {
+    display: flex !important;
+    align-items: center !important;
+    align-self: center !important;
+    margin: 0 !important;
+}
+
+body header .container .links {
+    display: flex !important;
+    gap: 20px;
+    align-items: center !important;
+    margin: 0 !important;
+}
+
+body header .container .links li {
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px;
+}
+
+body header .container .links img {
+    height: 16px;
+}
+
+body header .container .links a {
+    font-size: 1rem;
+}
+
+body header .container .links li.link-disabled {
+    opacity: 0.4;
+    pointer-events: none;
+    cursor: default;
+}
+
+body header .container .links li.link-disabled img {
+    filter: grayscale(100%);
+}
+
+body .sub-header {
+    padding: 0 30px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+body .sub-header .container {
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 980px;
+    padding: 20px 0 24px;
+    margin: 0 auto;
+}
+
+body .sub-header .container p:not(:last-child) {
+    margin-bottom: 0.1rem;
+}
+
+body .sub-header .container p:last-child {
+    margin-bottom: 0;
+}
+
+body .sub-header .container .links {
+    margin-bottom: 0.25rem;
+}
+
+body .sub-header .container nav p {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+body .sub-header .container > div:last-child {
+    margin-top: 1.5rem;
+}
+
+body .sub-header .container .links {
+    display: flex;
+    flex-wrap: wrap;
+    overflow-x: auto;
+    white-space: nowrap;
+    gap: 5px;
+}
+
+body .sub-header .container .links li {
+    display: inline; /* Keep list items in a row */
+}
+
+body .sub-header .container .links li:not(:last-child)::after {
+    content: ',\00a0';
+}
+
+/* Optional: Hide scrollbar but allow scrolling */
+body .sub-header .container .links::-webkit-scrollbar {
+    display: none;
+}
+
+body main {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    flex: 1;
+}
+
+.main-section {
+    padding: 0 30px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.container-custom {
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 980px;
+    padding: 30px 0;
+    margin: 0 auto;
+}
+
+.container-custom.border-top {
+    border-top: 1px solid #000000;
+}
+
+.container-custom:first-child {
+    padding: 30px 0;
+}
+
+.main-section:first-child .container-custom {
+    padding: 24px 0 30px;
+}
+
+body main .container:first-child {
+    padding: 0 0 60px;
+}
+
+body main .container:not(:first-child) {
+    border-top: 1px solid #000000;
+}
+
+body main .container p:last-child {
+    margin-bottom: 0;
+}
+
+body main .container pre {
+    background-color: #f5f5f5;
+    padding: 20px;
+    overflow-x: auto;
+    display: block;
+    white-space: pre-wrap;
+    max-width: 100%;
+}
+
+body footer {
+    margin: 0 auto;
+    padding: 0 30px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+body footer .container {
+    border-top: 1px solid #000000;
+    padding: 60px 0;
+    margin: 0 auto;
+    max-width: 980px;
+}
+
+@media (max-width: 768px) {
+    body header {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    body header .container {
+        flex-direction: column;
+        align-items: flex-start !important;
+        margin: 10px auto 20px;
+    }
+
+    .header-custom {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+
+    body header h1 {
+        margin-bottom: 30px !important;
+    }
+
+    body header .container nav {
+        width: 100%;
+        align-self: flex-start;
+    }
+
+    .header-nav-custom {
+        width: 100%;
+        align-self: flex-start !important;
+    }
+
+    body .sub-header {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    body .sub-header .container {
+        padding: 20px 0;
+        margin: 0 auto;
+    }
+
+    body header .container .links {
+        padding: 0;
+        justify-content: flex-start;
+        width: 100%;
+    }
+
+    .main-section {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .container-custom {
+        padding: 10px 0;
+    }
+
+    .container-custom:first-child {
+        padding: 0 0 10px 0;
+    }
+
+    body main .container .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    body footer .container {
+        padding: 20px 0;
+        margin: 0;
+    }
+}
+
+
+/* Global wrapper to center all page text/content */
+.page-container {
+    max-width: 800px;   /* adjust for taste: 800–1200px is common */
+    margin: 0 auto;      /* centers horizontally */
+    padding: 0 20px;     /* breathing room at the edges */
+}
+
+/* Make text easier to read */
+.page-container p,
+.page-container ol,
+.page-container ul {
+    line-height: 1.6;
+    max-width: 70ch;     /* keeps text lines ~70 characters wide */
+    margin: 0 auto 1em;  /* center paragraphs and add spacing */
+    text-align: left;    /* or justify if you prefer blocky edges */
+}
+
+.header {
+    margin-bottom: 20px;
+    padding: 20px;
+    background: none;  /* white;  */
+    border-radius: 0;   /* 8px;  */
+    box-shadow: none;  /* 0 2px 4px rgba(0,0,0,0.1);  */
+}
+
+/*.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.tab-button {
+    padding: 12px 24px;
+    font-size: 16px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.tab-button.active {
+    background: #007bff;
+    color: white;
+    border-color: #0056b3;
+}
+
+.tab-button:hover {
+    background: #0056b3;
+    color: white;
+}*/
+
+.tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 30px;
+    padding: 10px 0;
+}
+
+.tab-button {
+    padding: 10px 18px;
+    font-size: 15px;
+    font-weight: 500;
+    background: #f0f0f0;     /* subtle background for inactive */
+    border: none;
+    border-radius: 20px;     /* pill shape */
+    cursor: pointer;
+    color: #444;
+    transition: all 0.3s ease;
+}
+
+.tab-button:hover {
+    background: #e0e0e0;
+    color: #000;
+}
+
+.tab-button.active {
+    background: #007bff;     /* accent for active */
+    color: #fff;
+    font-weight: 600;
+}
+
+.tab-content {
+    margin-top: 20px;  /* extra space below the tab bar */
+}
+
+
+.video-grid {
+    display: grid;
+    /* Adjust columns based on screen size */
+    grid-template-columns: repeat(auto-fill, minmax(256px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.video-container {
+    background: white;
+    border-radius: 0;  /* 8px; */
+    overflow: hidden;
+    box-shadow: none;  /* 0 2px 4px rgba(0,0,0,0.1); */
+    transition: transform 0.2s;
+}
+
+.video-container:hover {
+    transform: translateY(-2px); 
+    box-shadow: none;  /* 0 4px 8px rgba(0,0,0,0.2); */
+}
+
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 100%; /* 1:1 aspect ratio */
+    background: none;  /* #eee; */ 
+    cursor: pointer;
+}
+
+.video-wrapper video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Maintain aspect ratio */
+    background: none;  /* #000; */
+}
+
+.play-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+
+
+.video-wrapper:hover .play-overlay {
+    opacity: 1;
+}
+
+
+.play-icon {
+    width: 60px;
+    height: 60px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.play-icon:before {
+    content: '';
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 12px 0 12px 20px;
+    border-color: transparent transparent transparent white;
+    margin-left: 4px;
+}
+
+.video-info {
+    padding: 12px;
+}
+
+.video-title {
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+    word-break: break-all;
+}
+
+.load-more {
+    display: block;
+    margin: 20px auto;
+    padding: 12px 24px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.load-more:hover {
+    background: none;  /* #0056b3;  */ 
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Add new styles for triplets */
+.triplet-container {
+    background: none;  /* white; */
+    border-radius: 0;  /* 8px; */ 
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: none;  /* 0 2px 4px rgba(0,0,0,0.1); */
+}
+
+.triplet-videos {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.triplet-video-wrapper {
+    flex: 1;
+    position: relative;
+    width: calc(33.33% - 10px);
+}
+
+.triplet-video-wrapper video {
+    width: 100%;
+    background: none;  /* #000; */
+    border-radius: 0;  /* 4px; */
+}
+
+.method-label {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+.uid-label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/*#set1 .video-grid {
+    display: block;
+    max-width: 1450px;
+    margin: 0 auto;
+}*/
+
+#set1 .video-grid {
+    display: flex;              /* stack triplets vertically */
+    flex-direction: column;
+    align-items: center;         /* center each triplet horizontally */
+    gap: 20px;
+}
+
+/* Make each triplet as wide as its videos and center it */
+#set1 .triplet-container {
+    width: fit-content;          /* shrink-wrap to content */
+    margin: 20px auto;           /* center the container */
+    background: none;  /* white; */          /* optional: match other cards */
+}
+
+/* Center the content inside the triplet */
+#set1 .content-wrapper {
+    justify-content: center;     /* center the inner row */
+}
+
+/* Center the three videos and allow wrap on small screens */
+#set1 .triplet-videos {
+    justify-content: center;
+    flex-wrap: wrap;             /* so they wrap nicely on narrow viewports */
+}
+
+/* Optional: center the UID label too */
+#set1 .uid-label {
+    text-align: center;
+}
+
+
+#set2 .video-grid {
+    display: flex;              /* stack triplets vertically */
+    flex-direction: column;
+    align-items: center;         /* center each triplet horizontally */
+    gap: 20px;
+}
+
+/* Make each triplet as wide as its videos and center it */
+#set2 .triplet-container {
+    width: fit-content;          /* shrink-wrap to content */
+    margin: 20px auto;           /* center the container */
+    background: none;  /* white; */          /* optional: match other cards */
+}
+
+/* Center the content inside the triplet */
+#set2 .content-wrapper {
+    justify-content: center;     /* center the inner row */
+}
+
+/* Center the three videos and allow wrap on small screens */
+#set2 .triplet-videos {
+    justify-content: center;
+    flex-wrap: wrap;             /* so they wrap nicely on narrow viewports */
+}
+
+/* Optional: center the UID label too */
+#set2 .uid-label {
+    text-align: center;
+}
+
+
+
+.triplet-container {
+    margin: 20px;
+    padding: 20px;
+    background: none;  /* #f5f5f5; */
+    border-radius: 0;  /* 8px; */
+}
+.content-wrapper {
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+    justify-content: center;
+}
+.input-image-wrapper, .triplet-video-wrapper {
+    position: relative;
+    width: 256px;  /* Fixed width for all containers */
+    flex-shrink: 0;
+}
+.input-image-wrapper img {
+    width: 100%;
+    height: 256px;  /* Fixed height to match width */
+    object-fit: contain;
+    background: #000;
+    border-radius: 4px;
+    display: block;
+}
+.triplet-videos {
+    display: flex;
+    gap: 20px;
+}
+.triplet-video-wrapper video {
+    width: 100%;
+    height: 256px;  /* Fixed height to match width */
+    object-fit: contain;
+    background: none;  /* #000; */
+    border-radius: 0;  /* 4px; */
+    display: block;
+}
+.method-label {
+    margin-top: 8px;
+    text-align: center;
+    font-weight: bold;
+}
+
+
+/* Add these styles in the same section where other video-related CSS is defined */
+.quadruplet-container {
+    margin: 20px;
+    padding: 20px;
+    background: none;  /* #f5f5f5; */
+    border-radius: 0;  /* 8px; */
+}
+
+.quadruplet-videos {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.quadruplet-video-wrapper {
+    flex: 1;
+    position: relative;
+    width: calc(25% - 12px); /* Account for gap */
+}
+
+.quadruplet-video-wrapper video {
+    width: 100%;
+    height: 256px;  /* Fixed height to match width */
+    display: block;
+}
+.quad-img-wrapper {
+    position: relative;
+    width: 100%; /* Account for gap */
+    height: 256px;
+    display: block;
+    position: relative;
+}
+.quad-img-wrapper > img {
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%; /* Optional: for horizontal centering as well */
+    transform: translate(-50%, -50%); /* Adjusts for the image's own dimensions */
+}
+
+/* Match the styling of other video sets */
+#set3 .video-grid {
+    display: block;
+    max-width: 1500px;
+    margin: 0 auto;
+}
+#set3 .content-wrapper {
+    justify-content: center;     /* center the inner row */
+}
+
+/* ============ Slider Comparison Styles ============ */
+
+/* Snapshot Container */
+.snapshot-container {
+    position: relative;
+    margin: 30px 0;
+}
+
+.snapshot-scroll-wrapper {
+    /* Bootstrap handles flex: flex-grow-1 overflow-hidden */
+}
+
+.snapshot-row {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 10px 0;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+}
+
+.snapshot-row::-webkit-scrollbar {
+    height: 6px;
+}
+
+.snapshot-row::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.snapshot-row::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.snapshot-row::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.snapshot-item {
+    min-width: 150px;
+    max-width: 150px;
+    height: 150px;
+    cursor: pointer;
+    border: 3px solid transparent;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background: #f5f5f5;
+    flex-shrink: 0;
+}
+
+.snapshot-item:hover {
+    border-color: #007bff;
+    transform: scale(1.05);
+}
+
+.snapshot-item.active {
+    border-color: #0056b3;
+    box-shadow: 0 4px 12px rgba(0, 86, 179, 0.3);
+}
+
+.snapshot-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.snapshot-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Snapshot Navigation Buttons */
+.snapshot-nav-btn {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #5a6268;
+    background: #6c757d;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    color: white;
+}
+
+.snapshot-nav-btn:hover {
+    background: #adb5bd;
+    border-color: #adb5bd;
+    transform: translateY(-1px);
+}
+
+.snapshot-nav-btn:active {
+    background: #868e96;
+    transform: translateY(0);
+}
+
+/* Comparison Container */
+.comparison-container {
+    margin: 40px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Dual Comparison Container - Side by Side */
+.dual-comparison-container {
+    display: flex;
+    gap: 30px;
+    margin: 40px 0;
+    justify-content: center;
+    flex-wrap: wrap;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Simple Video Container for Side-by-Side Layout */
+.video-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #000;
+}
+
+.video-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.gen-image-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #f5f5f5;
+}
+
+.gen-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.video-caption {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+.asset-link {
+    text-align: center;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.video-container .video-label {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 8px 16px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 4px;
+    z-index: 10;
+    pointer-events: none;
+    user-select: none;
+}
+
+.comparison-wrapper {
+    flex: 1;
+    min-width: 300px;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: flex-start;
+}
+
+/* Video Comparison Slider */
+.video-comparison-slider {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #000;
+    cursor: ew-resize;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.comparison-video-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.comparison-video-wrapper video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.video-label {
+    position: absolute;
+    top: 20px;
+    padding: 8px 16px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 4px;
+    z-index: 10;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    pointer-events: none;
+}
+
+.ours-video .video-label {
+    left: 20px;
+}
+
+.compare-video .video-label {
+    right: 20px;
+}
+
+/* Slider Handle */
+.slider-handle {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 4px;
+    height: 100%;
+    transform: translateX(-50%);
+    cursor: ew-resize;
+    z-index: 20;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.slider-line {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 100%;
+    background: white;
+    transform: translateX(-50%);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
+.slider-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    background: white;
+    border: 2px solid #007bff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slider-button::before,
+.slider-button::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-style: solid;
+    border-width: 0 2px 2px 0;
+}
+
+.slider-button::before {
+    left: 10px;
+    transform: rotate(135deg);
+}
+
+.slider-button::after {
+    right: 10px;
+    transform: rotate(-45deg);
+}
+
+/* UID Display */
+.comparison-uid {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+/* Video Control Buttons */
+.video-controls {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.play-pause-btn {
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease;
+    flex-shrink: 0;
+}
+
+.play-pause-btn:hover {
+    opacity: 0.7;
+}
+
+.play-pause-btn svg {
+    display: block;
+}
+
+.video-progress-bar {
+    flex: 1;
+    min-width: 200px;
+    max-width: 600px;
+    height: 8px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: #e9ecef;
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+}
+
+.video-progress-bar::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #6c757d;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.video-progress-bar::-webkit-slider-thumb:hover {
+    background: #495057;
+}
+
+.video-progress-bar::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: #6c757d;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.video-progress-bar::-moz-range-thumb:hover {
+    background: #495057;
+}
+
+.control-btn {
+    min-width: 120px;
+    padding: 10px 24px;
+    font-size: 15px;
+    font-weight: 500;
+    color: white;
+    background-color: #6c757d;
+    border: 1px solid #5a6268;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.control-btn:hover {
+    background-color: #adb5bd;
+    border-color: #adb5bd;
+    transform: translateY(-1px);
+}
+
+.control-btn:active {
+    background-color: #868e96;
+    transform: translateY(0);
+}
+
+/* Generation Comparison Container */
+.gen-comparison-container {
+    display: flex;
+    gap: 30px;
+    margin: 40px 0;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.gen-image-wrapper {
+    flex: 1;
+    min-width: 300px;
+    max-width: 500px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: flex-start;
+}
+
+.gen-image-wrapper img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: contain;
+    border-radius: 8px;
+    background: #f5f5f5;
+}
+
+.gen-image-label {
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+}
+
+/* Responsive Design - Let Bootstrap handle most responsive behavior */
+@media (max-width: 970px) {
+    .snapshot-item {
+        min-width: 100px;
+        max-width: 100px;
+        height: 100px;
+    }
+
+    .snapshot-row {
+        gap: 10px;
+    }
+
+    .video-label {
+        font-size: 12px;
+        padding: 6px 12px;
+        top: 10px;
+    }
+
+    .ours-video .video-label {
+        left: 10px;
+    }
+
+    .compare-video .video-label {
+        right: 10px;
+    }
+
+    .slider-button {
+        width: 30px;
+        height: 30px;
+    }
+
+    .snapshot-nav-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
+    }
+
+    .comparison-uid {
+        font-size: 12px;
+    }
+}
+
+/* ============ Gaussian Gallery Styles ============ */
+.gaussian-gallery {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 10px 0;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+}
+
+.gaussian-gallery::-webkit-scrollbar {
+    height: 6px;
+}
+
+.gaussian-gallery::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.gaussian-gallery::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.gaussian-gallery::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.gaussian-item {
+    cursor: pointer;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: #f5f5f5;
+    min-width: 280px;
+    max-width: 280px;
+    flex-shrink: 0;
+}
+
+.gaussian-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.gaussian-item img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    display: block;
+}
+
+.gaussian-caption {
+    padding: 12px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    background: white;
+}
+
+@media (max-width: 640px) {
+    .gaussian-item {
+        min-width: 200px;
+        max-width: 200px;
+    }
+}

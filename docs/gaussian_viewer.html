@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3DGS Viewer</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: system-ui, sans-serif;
+    }
+
+    #back-btn {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      padding: 12px 24px;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      font-size: 18px;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      backdrop-filter: blur(4px);
+      cursor: pointer;
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s ease;
+    }
+
+    #back-btn:hover {
+      background: rgba(0,0,0,0.9);
+    }
+
+    #back-btn::before {
+      content: '←';
+      font-size: 22px;
+    }
+
+    #labels {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .label {
+      position: absolute;
+      top: 12px;
+      padding: 8px 16px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      font-size: 18px;
+      border-radius: 6px;
+      backdrop-filter: blur(4px);
+      transform: translateX(-50%);
+    }
+
+    .label.left {
+      left: 25vw;
+    }
+
+    .label.right {
+      left: 75vw;
+    }
+
+    .ours-note {
+      position: absolute;
+      top: 52px;
+      left: 25vw;
+      transform: translateX(-50%);
+      padding: 4px 8px;
+      background: rgba(0,0,0,0.5);
+      color: rgba(255,255,255,0.85);
+      font-size: 18px;
+      border-radius: 4px;
+      backdrop-filter: blur(4px);
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .trellis-note {
+      position: absolute;
+      top: 52px;
+      left: 75vw;
+      transform: translateX(-50%);
+      padding: 4px 8px;
+      background: rgba(0,0,0,0.5);
+      color: rgba(255,255,255,0.85);
+      font-size: 18px;
+      border-radius: 4px;
+      backdrop-filter: blur(4px);
+      max-width: 280px;
+      text-align: center;
+      line-height: 1.4;
+      pointer-events: none;
+    }
+
+    #title {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 16px 32px;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      font-size: 24px;
+      border-radius: 8px;
+      backdrop-filter: blur(4px);
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 1;
+      transition: opacity 0.5s ease;
+    }
+
+    #title.fade-out {
+      opacity: 0;
+    }
+
+    #loading-notice {
+      position: fixed;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 24px;
+      background: rgba(255, 165, 0, 0.9);
+      color: white;
+      font-size: 18px;
+      font-weight: 600;
+      border-radius: 6px;
+      backdrop-filter: blur(4px);
+      z-index: 1500;
+      opacity: 1;
+      transition: opacity 0.5s ease;
+    }
+
+    #loading-notice.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #cond-image-container {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      z-index: 1000;
+    }
+
+    #cond-image-container.visible {
+      display: flex;
+    }
+
+    #cond-image {
+      max-width: 350px;
+      max-height: 350px;
+      border-radius: 8px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    #cond-image-label {
+      padding: 8px 16px;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      font-size: 18px;
+      font-weight: 600;
+      border-radius: 6px;
+      backdrop-filter: blur(4px);
+    }
+
+    #axis-legend {
+      position: fixed;
+      top: 60px;
+      right: 20px;
+      width: 120px;
+      height: 120px;
+      z-index: 1000;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Back button -->
+<button id="back-btn" onclick="window.location.href='index.html#gaussian-comparison'">Back</button>
+
+<!-- Loading notice -->
+<div id="loading-notice">Loading 3DGS could take some time.</div>
+
+<!-- Title overlay (fades out after 2 seconds) -->
+<div id="title"></div>
+
+<!-- Labels overlay -->
+<div id="labels">
+  <div class="label left"></div>
+  <div class="label right"></div>
+  <div class="ours-note">Notice the view-dependent appearance.</div>
+  <div class="trellis-note">TRELLIS does not respect the camera coordinate system, so sometimes their output objects will be oriented incorrectly.</div>
+</div>
+
+<!-- Conditioning image (for generation only) -->
+<div id="cond-image-container">
+  <img id="cond-image" src="" alt="Conditioning Image">
+  <div id="cond-image-label">Conditioning Image</div>
+</div>
+
+<!-- Axis legend canvas -->
+<canvas id="axis-legend"></canvas>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.178.0/three.module.js",
+    "@sparkjsdev/spark": "https://sparkjs.dev/releases/spark/0.1.10/spark.module.js",
+    "three/examples/jsm/controls/OrbitControls.js": "https://unpkg.com/three@0.178.0/examples/jsm/controls/OrbitControls.js"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from "three";
+import { SplatMesh } from "@sparkjsdev/spark";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+
+// Parse URL parameters
+const params = new URLSearchParams(window.location.search);
+const name = params.get("name") || "Comparison";
+const leftUrl = params.get("left") || "";
+const rightUrl = params.get("right") || "";
+const leftLabel = params.get("leftLabel") || "Left";
+const rightLabel = params.get("rightLabel") || "Right";
+const leftScale = parseFloat(params.get("leftScale") || "1");
+const rightScale = parseFloat(params.get("rightScale") || "1");
+
+// Debug logging
+console.log("Viewer initialized with:");
+console.log("Name:", name);
+console.log("Left URL:", leftUrl);
+console.log("Right URL:", rightUrl);
+console.log("Left Scale:", leftScale);
+console.log("Right Scale:", rightScale);
+
+// Set title and labels
+document.getElementById("title").textContent = name;
+document.querySelector(".label.left").textContent = leftLabel;
+document.querySelector(".label.right").textContent = rightLabel;
+
+// Show conditioning image for generation cases
+if (name.toLowerCase().includes("generation") && leftUrl) {
+  // Extract folder path from leftUrl (e.g., "gaussians/gen_dragon/ours.spz" -> "gaussians/gen_dragon")
+  const folderPath = leftUrl.substring(0, leftUrl.lastIndexOf('/'));
+  const condImagePath = `${folderPath}/input_in_viewer.png`;
+
+  console.log("Loading conditioning image:", condImagePath);
+
+  const condImage = document.getElementById("cond-image");
+  const condImageContainer = document.getElementById("cond-image-container");
+
+  condImage.src = condImagePath;
+  condImage.onload = () => {
+    condImageContainer.classList.add("visible");
+    console.log("Conditioning image loaded successfully");
+  };
+  condImage.onerror = () => {
+    console.warn("Failed to load conditioning image:", condImagePath);
+  };
+}
+
+// Fade out title after 2 seconds
+setTimeout(() => {
+  document.getElementById("title").classList.add("fade-out");
+}, 2000);
+
+// --- Renderer ---
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setScissorTest(true); // key for split view
+document.body.appendChild(renderer.domElement);
+
+// --- Shared camera + controls (SYNCED automatically) ---
+const camera = new THREE.PerspectiveCamera(
+  40,
+  (window.innerWidth / 2) / window.innerHeight, // per-viewport aspect
+  0.1,
+  1000
+);
+camera.position.set(4, 0, 0);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.target.set(0, 0, 0);
+controls.update();
+
+// --- Two scenes (left/right) ---
+const leftScene = new THREE.Scene();
+const rightScene = new THREE.Scene();
+
+// Optional: same helpers in both scenes
+function addHelpers(scene) {
+  const majorSize = 200;
+  const majorDivs = majorSize / 1;
+  const majorGrid = new THREE.GridHelper(majorSize, majorDivs, 0xffffff, 0xcccccc);
+  majorGrid.material.transparent = true;
+  majorGrid.material.opacity = 0.8;
+  scene.add(majorGrid);
+
+  const AXIS_LEN = 1e5;
+  function axisLine(dir, color) {
+    const geom = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3().copy(dir).multiplyScalar(-AXIS_LEN),
+      new THREE.Vector3().copy(dir).multiplyScalar( AXIS_LEN),
+    ]);
+    const mat = new THREE.LineBasicMaterial({ color, depthTest: false, transparent: true, opacity: 0.9 });
+    return new THREE.Line(geom, mat);
+  }
+  scene.add(axisLine(new THREE.Vector3(1,0,0), 0xff4d4d));
+  scene.add(axisLine(new THREE.Vector3(0,1,0), 0x4dff4d));
+  scene.add(axisLine(new THREE.Vector3(0,0,1), 0x4da6ff));
+}
+addHelpers(leftScene);
+addHelpers(rightScene);
+
+// --- Load Gaussian Splats ---
+function addSplat(scene, url, { scale=1, rotX=-Math.PI/2 } = {}) {
+  if (!url) {
+    console.warn("No URL provided for splat");
+    return null;
+  }
+
+  console.log("Loading splat from:", url);
+
+  try {
+    const mesh = new SplatMesh({ url });
+    mesh.visible = true;
+    mesh.position.set(0, 0, 0);
+    mesh.quaternion.set(1, 0, 0, 0);
+    mesh.scale.set(scale, scale, scale);
+    mesh.rotation.x = rotX; // z-up -> y-up
+    scene.add(mesh);
+
+    console.log("Splat mesh added to scene:", url);
+    return mesh;
+  } catch (error) {
+    console.error("Error loading splat:", url, error);
+    return null;
+  }
+}
+
+console.log("Adding left splat...");
+const leftMesh = addSplat(leftScene, leftUrl, { scale: leftScale });
+console.log("Adding right splat...");
+const rightMesh = addSplat(rightScene, rightUrl, { scale: rightScale });
+
+// Hide loading notice after splats start loading (they load asynchronously)
+// Give it 3 seconds to start rendering, then hide the notice
+setTimeout(() => {
+  const loadingNotice = document.getElementById("loading-notice");
+  if (loadingNotice) {
+    loadingNotice.classList.add("hidden");
+  }
+}, 3000);
+
+// --- Axis Helper Setup ---
+const axisCanvas = document.getElementById("axis-legend");
+axisCanvas.width = 120;
+axisCanvas.height = 120;
+
+const axisRenderer = new THREE.WebGLRenderer({ canvas: axisCanvas, alpha: true });
+axisRenderer.setSize(120, 120);
+
+const axisScene = new THREE.Scene();
+const frustumSize = 2;
+const axisCamera = new THREE.OrthographicCamera(
+  -frustumSize, frustumSize,
+  frustumSize, -frustumSize,
+  0.1, 10
+);
+axisCamera.position.set(0, 0, 3);
+
+// Create axis arrows
+const arrowLength = 1.4;
+const arrowHeadLength = 0.3;
+const arrowHeadWidth = 0.25;
+
+const xArrow = new THREE.ArrowHelper(
+  new THREE.Vector3(1, 0, 0),
+  new THREE.Vector3(0, 0, 0),
+  arrowLength,
+  0xff4d4d,
+  arrowHeadLength,
+  arrowHeadWidth
+);
+const yArrow = new THREE.ArrowHelper(
+  new THREE.Vector3(0, 1, 0),
+  new THREE.Vector3(0, 0, 0),
+  arrowLength,
+  0x4dff4d,
+  arrowHeadLength,
+  arrowHeadWidth
+);
+const zArrow = new THREE.ArrowHelper(
+  new THREE.Vector3(0, 0, 1),
+  new THREE.Vector3(0, 0, 0),
+  arrowLength,
+  0x4da6ff,
+  arrowHeadLength,
+  arrowHeadWidth
+);
+
+axisScene.add(xArrow);
+axisScene.add(yArrow);
+axisScene.add(zArrow);
+
+// Add labels using sprites
+function createTextSprite(text, color) {
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+  canvas.width = 64;
+  canvas.height = 64;
+
+  context.fillStyle = color;
+  context.font = 'Bold 48px Arial';
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.fillText(text, 32, 32);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
+  const sprite = new THREE.Sprite(spriteMaterial);
+  sprite.scale.set(1.0, 1.0, 1);
+  return sprite;
+}
+
+const xLabel = createTextSprite('X', '#ff4d4d');
+xLabel.position.set(1.7, 0, 0);
+axisScene.add(xLabel);
+
+const yLabel = createTextSprite('Y', '#4dff4d');
+yLabel.position.set(0, 1.7, 0);
+axisScene.add(yLabel);
+
+const zLabel = createTextSprite('Z', '#4da6ff');
+zLabel.position.set(0, 0, 1.7);
+axisScene.add(zLabel);
+
+// --- Render loop: same camera rendered twice ---
+renderer.setAnimationLoop(() => {
+  controls.update();
+
+  // Sync axis helper rotation with main camera
+  axisCamera.position.copy(camera.position).normalize().multiplyScalar(3);
+  axisCamera.lookAt(0, 0, 0);
+  axisRenderer.render(axisScene, axisCamera);
+
+  const fullW = window.innerWidth;
+  const fullH = window.innerHeight;
+  const halfW = Math.floor(fullW / 2);
+
+  // Update camera aspect PER viewport (important!)
+  camera.aspect = halfW / fullH;
+  camera.updateProjectionMatrix();
+
+  // LEFT viewport
+  renderer.setViewport(0, 0, halfW, fullH);
+  renderer.setScissor(0, 0, halfW, fullH);
+  renderer.setClearColor(0x000000, 1);
+  renderer.clear(true, true, true);
+  renderer.render(leftScene, camera);
+
+  // RIGHT viewport
+  renderer.setViewport(halfW, 0, fullW - halfW, fullH);
+  renderer.setScissor(halfW, 0, fullW - halfW, fullH);
+  renderer.setClearColor(0x000000, 1);
+  renderer.clear(true, true, true);
+  renderer.render(rightScene, camera);
+});
+
+// Resize
+window.addEventListener("resize", () => {
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+
+</body>
+</html>
